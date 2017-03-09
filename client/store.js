@@ -1,38 +1,45 @@
 /**
  * Created by Daniel on 06.03.2017.
  */
-import {createStore, compose, applyMiddleware} from 'redux';
+import {createStore, compose, applyMiddleware, dispatch} from 'redux';
 import {syncHistoryWithStore} from 'react-router-redux';
 import {browserHistory} from 'react-router';
 import createSagaMiddleware from 'redux-saga'
 
+
+import loadData from './sagas/sagas';
+
+
 //import reducer
 import rootReducer from './reducers/index';
 
-import {getComments} from './sagas/comments';
+const sagaMiddleware = createSagaMiddleware()
 
-import posts from './data/posts';
+
 // import comments from './data/comments';
-
-console.log(getComments.Promise._65);
-// const comments = applyMiddleware(createSagaMiddleware(getComments));
-// const  comments  = getComments;
+// import posts from './data/posts';
 
 
-const defaultState =
-    {
-        posts,
-        comments
-    };
+const defaultState = {
+    comments: [],
+    posts: []
+}
 
 
 const enhancers = compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
 );
 
-const store = createStore(rootReducer, defaultState, enhancers);
+// applyMiddleware(sagaMiddleware)
+// const store = createStore(rootReducer, defaultState , enhancers);
+
+const store = createStore(
+    rootReducer, defaultState, applyMiddleware(sagaMiddleware));
+
 export const history = syncHistoryWithStore(browserHistory, store);
 
+
+sagaMiddleware.run(loadData)
 
 //reducer rebuild
 if (module.hot) {
@@ -41,6 +48,7 @@ if (module.hot) {
         store.replaceReducer(nextRootReducer)
     });
 }
+
 
 
 export default  store;

@@ -1,4 +1,5 @@
 //increment
+import axios from 'axios'
 
 export function increment(index) {
     return {
@@ -26,3 +27,21 @@ export function removeComment(postId, i) {
         postId
     }
 }
+//API LOADERS
+export function loadPosts() {
+    return {
+        type: 'LOAD_POSTS',
+    }
+}
+
+export function loadComments() {
+    return {
+        type: 'LOAD_COMMENTS',
+    }
+}
+
+
+
+
+
+
